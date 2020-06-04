@@ -12,7 +12,7 @@ Algorithm that identifies clusters and calculates their height and width.
 **Remark:** These criterias are quite arbitrary and can be andjusted.
 
 ## Prerequisites to use it:
-The algorithm is implemented in C++11. Mainly because native Python is very slow and the algorithm is a bit too complex for using pre-existing Python high-performance libraries such as NumPy. However, thanks to Pybind11 (https://pybind11.readthedocs.io) the algorithm can be used in Pyhton and works with NumPy arrays.
+The algorithm is implemented in C++11. Mainly because native Python is very slow and the algorithm is a bit too complex for using pre-existing Python high-performance libraries such as NumPy. However, thanks to Pybind11 (https://pybind11.readthedocs.io) the algorithm can be used in Python and works with NumPy arrays.
 
 What you need:
 *  GCC
@@ -25,7 +25,7 @@ c++ -O3 -Wall -shared -std=c++11 -fPIC `python3 -m pybind11 --` identify.cpp -o 
 ```
 Then you can copy the `.so` file into your directory with the Python code.
 
-## How to use in Pyhton:
+## How to use in Python:
 For example, get clusters for convective updrafts:
 ```
 import identify
