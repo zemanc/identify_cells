@@ -21,7 +21,7 @@ What you need:
 
 ## How to compile:
 ```
-c++ -O3 -Wall -shared -std=c++11 -fPIC `python3 -m pybind11 --` identify.cpp -o identify`python3-config --extension-suffix`
+c++ -O3 -Wall -shared -std=c++11 -fPIC `python3 -m pybind11 --includes` identify.cpp -o identify`python3-config --extension-suffix`
 ```
 Then you can copy the `.so` file into your directory with the Python code.
 
