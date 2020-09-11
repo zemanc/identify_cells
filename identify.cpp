@@ -67,8 +67,8 @@ void unite(size_t *parents, size_t *ranks, size_t num_a, size_t num_b,
 {
     size_t a_root = find(parents, num_a, ny, nx);
     size_t b_root = find(parents, num_b, ny, nx);
-    size_t rank_a = ranks[num_a];
-    size_t rank_b = ranks[num_b];
+    size_t rank_a = ranks[a_root];
+    size_t rank_b = ranks[b_root];
     if (rank_a > rank_b)
         parents[num_b] = a_root;
     else if (rank_a < rank_b)
