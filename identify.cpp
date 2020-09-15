@@ -243,7 +243,10 @@ py::array_t<size_t> get_clusters(const py::array_t<double> values,
                     if (topheight == map_topheight.end())
                         throw std::runtime_error("cluster has no top height");
                     // throw the cell out if the value is below the threshold
-                    if (maxval->second.first > min_max_val) {
+                    if (maxval->second.first < min_max_val ||
+                        maxval->second.second < min_height ||
+                        maxval->second.second > max_height ||
+                        topheight->second < min_top_height) {
                         ptr_points[idx] = 0;
                         ptr_clusters[idx] = 0;
                     }
