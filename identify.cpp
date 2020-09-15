@@ -29,6 +29,7 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <iomanip>
 
 namespace py = pybind11;
 
@@ -65,18 +66,43 @@ size_t find(const size_t *parents, size_t num, size_t ny, size_t nx)
 void unite(size_t *parents, size_t *ranks, size_t num_a, size_t num_b,
            size_t ny, size_t nx)
 {
-    size_t a_root = find(parents, num_a, ny, nx);
-    size_t b_root = find(parents, num_b, ny, nx);
-    size_t rank_a = ranks[a_root];
-    size_t rank_b = ranks[b_root];
-    if (rank_a > rank_b)
-        parents[num_b] = a_root;
-    else if (rank_a < rank_b)
-        parents[num_a] = b_root;
-    else if (a_root != b_root) {
-        parents[num_b] = a_root;
-        ranks[num_a]++;
+    size_t root_a = find(parents, num_a, ny, nx);
+    size_t root_b = find(parents, num_b, ny, nx);
+    size_t rank_a = ranks[root_a];
+    size_t rank_b = ranks[root_b];
+    std::cout << "unite " << num_a << " and " << num_b << std::endl;
+    //if (rank_a > rank_b) {
+    //    parents[num_b] = a_root;
+    //    std::cout << "\tcase 1" << std::endl;
+    //}
+    //else if (rank_a < rank_b) {
+    //    parents[num_a] = b_root;
+    //    std::cout << "\tcase 2" << std::endl;
+    //}
+    //else if (a_root != b_root) {
+    //    parents[num_b] = a_root;
+    //    ranks[num_a]++;
+    //    std::cout << "\tcase 3" << std::endl;
+    //}
+    if (root_a == root_b)
+        return;
+
+    if (rank_a > rank_b) {
+        parents[num_b] = root_a;
+        //ranks[root_a] = ranks[root_a] + ranks[root_b];
+        std::cout << "\tcase 1" << std::endl;
     }
+    else if (rank_a < rank_b) {
+        parents[num_a] = root_b;
+        //ranks[root_b] = ranks[root_b] + ranks[root_a];
+        std::cout << "\tcase 2" << std::endl;
+    }
+    else if (rank_a == rank_b) {
+        parents[num_b] = root_a;
+        ranks[root_a] = ranks[root_a] + 1;
+        std::cout << "\tcase 3" << std::endl;
+    }
+
 }
 
 
@@ -158,7 +184,7 @@ py::array_t<size_t> get_clusters(const py::array_t<double> values,
         for (size_t j = 1; j < ny-1; j++)
             for (size_t i = 1; i < nx-1; i++) {
                 size_t idx = k*ny*nx + j*nx + i;
-                
+
                 // check threshold criteria
                 if (ptr_values[idx] >= min_val) {
                     ptr_points[idx] = 1;
@@ -172,7 +198,17 @@ py::array_t<size_t> get_clusters(const py::array_t<double> values,
                         nj = j + pj;
                         ni = i + pi;
                         idx_nb = nk*ny*nx + nj*nx + ni;
-                        
+
+                        std::cout << "idx " << std::setw(4) << idx
+                            << " k " << std::setw(4) << k
+                            << " j " << std::setw(4) << j
+                            << " i " << std::setw(4) << i
+                            << " checking idx_nb " << std::setw(4) << idx_nb
+                            << " nk " << std::setw(4) << nk
+                            << " nj " << std::setw(4) << nj
+                            << " ni " << std::setw(4) << ni
+                            << std::endl;
+                
                         if (ptr_points[idx_nb] == 1)
                             unite(ptr_parents, ptr_ranks, idx_nb, idx, ny, nx);
                     }
@@ -236,10 +272,7 @@ py::array_t<size_t> get_clusters(const py::array_t<double> values,
                     if (topheight == map_topheight.end())
                         throw std::runtime_error("cluster has no top height");
                     // throw the cell out if the value is below the threshold
-                    if (maxval->second.first < min_max_val ||
-                        maxval->second.second < min_height ||
-                        maxval->second.second > max_height ||
-                        topheight->second < min_top_height) {
+                    if (maxval->second.first > min_max_val) {
                         ptr_points[idx] = 0;
                         ptr_clusters[idx] = 0;
                     }
