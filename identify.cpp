@@ -18,7 +18,8 @@
  * clusters = identify.get_clusters(w, height, min_vel, min_max_vel, min_height,
  *                                  max_height, min_topheight)
  *
- * Christian Zeman, 2020
+ * Copyright (c) 2022 ETH Zurich, Christian Zeman & Jacopo Canton
+ * MIT License
  *
  ******************************************************************************/
 
